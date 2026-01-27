@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AnimalController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/animales', [AnimalController::class, 'index']);
+
+?>
