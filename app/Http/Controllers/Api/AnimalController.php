@@ -30,6 +30,11 @@ class AnimalController extends Controller
         return response()->json($animal, 201);
         
     }
+
+    public function show(Animal $animal): JsonResponse
+    {
+        return response()->json($animal, 200);
+    }
     
         
     

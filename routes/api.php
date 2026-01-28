@@ -8,6 +8,8 @@ Route::get('/test', function(){
     return response()->json(['ok' => 'true']);
 });
 
+Route::get('/animales', [AnimalController::class, 'index']);
+Route::get('/animales/{animal}', [AnimalController::class, 'show']);
 Route::post('/animales', [AnimalController::class, 'store']);
 
 ?>
