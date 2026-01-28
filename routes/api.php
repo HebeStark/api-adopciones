@@ -1,8 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AnimalController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/animales', [AnimalController::class, 'index']);
+Route::get('/test', function(){
+    return response()->json(['ok' => 'true']);
+});
+
+Route::post('/animales', [AnimalController::class, 'store']);
 
 ?>
