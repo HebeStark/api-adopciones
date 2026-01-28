@@ -50,5 +50,12 @@ class AnimalController extends Controller
 
         return response()->json($animal, 200);
     }
-        
+
+    public function destroy(Animal $animal): JsonResponse
+    {
+        $animal->delete();
+        return response()->json([
+            'message' => 'Animal eliminado correctamente.' 
+        ], 200);
+    }
 }
