@@ -36,6 +36,19 @@ class AnimalController extends Controller
         return response()->json($animal, 200);
     }
     
+    public function update(Request $request, Animal $animal): JsonResponse
+    {
+        $validated = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'especie' => 'sometimes|required|string|max:255',
+            'estado' => 'sometimes|in:disponible,adoptado',
+            'foto' => 'sometimes|nullable|string',
+            'descripcion' => 'sometimes|nullable|string',
+        ]);
+
+        $animal->update($validated);
+
+        return response()->json($animal, 200);
+    }
         
-    
 }
