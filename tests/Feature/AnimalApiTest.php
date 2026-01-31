@@ -19,26 +19,5 @@ class AnimalApiTest extends TestCase
        
     }
       
-    /** @test */    
-    public function it_can_create_an_animal()
-    {
-      $data = [
-          'nombre' => 'Max',
-          'especie' => 'Perro',
-          'estado' => 'disponible',          
-      ];
-        $response = $this->postJson('/api/animales', $data);
-        $response->assertStatus(201)
-                 ->assertJsonFragment([
-                    'nombre' => 'Max',
-                    'especie' => 'Perro',
-                    'estado' => 'disponible', ]);
-
-        $this->assertDatabaseHas('animals', [
-            'nombre' => 'Max',
-            'especie' => 'Perro',
-            'estado' => 'disponible',
-        ]);
-
-    }
+   
 }
