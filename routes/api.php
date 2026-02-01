@@ -13,7 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/animales', [AnimalController::class, 'index']);
 Route::get('/animales/{animal}', [AnimalController::class, 'show']);
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
 Route::post('/animales', [AnimalController::class, 'store']);
 Route::put('/animales/{animal}', [AnimalController::class, 'update']);
 Route::delete('/animales/{animal}', [AnimalController::class, 'destroy']);
