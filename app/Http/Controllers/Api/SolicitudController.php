@@ -10,7 +10,8 @@ class SolicitudController extends Controller
 {   
      public function index()
     {
-        return SolicitudAdopcion::with(['user', 'animal'])->get();
+        return response()->json
+        (SolicitudAdopcion::with(['user', 'animal'])->get());
         
     }
 
@@ -27,14 +28,19 @@ class SolicitudController extends Controller
         'estado' => 'pendiente',
        ]);
 
-         return response()->json($solicitud, 201);
+         return response()->json([
+            'message' => 'Solicitud creada correctamente',
+             'solicitud' => $solicitud, 
+             ],201);
     }  
 
     public function mySolicitudes()
     {
 
-        return SolicitudAdopcion::where('user_id', auth('api')->id())
-        ->with('animal')->get();
+        return response()->json(
+            SolicitudAdopcion::where('user_id', auth('api')->id())
+            ->with('animal')
+           ->get());
     }
 
     public function update(Request $request, SolicitudAdopcion $solicitud)
@@ -47,6 +53,9 @@ class SolicitudController extends Controller
         'estado' => $request->estado,
        ]);
 
-         return response()->json($solicitud);
+         return response()->json([
+            'message' => 'Estado de la solicitud actualizado correctamente',
+            'solicitud' => $solicitud,
+                ]);
     }
 }
