@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AnimalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SolicitudController;
+use App\Http\Controllers\Api\DashboardController;
 
 Route::get('/test', function(){
     return response()->json(['ok' => 'true']);
@@ -21,6 +22,7 @@ Route::middleware('role:user')->group(function () {
 
 Route::middleware('role:admin')->group(function () {  
 
+    Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/solicitudes', [SolicitudController::class, 'index']);
     Route::put('/solicitudes/{solicitud}', [SolicitudController::class, 'update']);
     
