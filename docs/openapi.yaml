@@ -5,9 +5,9 @@ info:
   description: API REST desarrollada en Laravel para la gestión de adopciones de animales.
 
 servers:
-  - url: http://localhost/api
+  - url: http://127.0.0.1:8000
 
-segurity:
+security:
   - bearerAuth: []  
 
 paths:
@@ -23,15 +23,172 @@ paths:
       summary: Listado de animales
       responses:
         '200':
-          description: OK
+          description: Listado de animales
     post:
       summary: Crear animal (admin)
       responses:
         '201':
           description: Animal creado
 
+  /api/solicitudes:
+    post:
+      summary: Crear solicitud de adopción
+      description: Permite a un usuario autenticado crear una solicitud de adopción para un animal específico.
+      security:
+        - bearerAuth: []
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudAdopcionCreate'      
+      responses:
+        '201':
+          description: Solicitud creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitudAdopcion'          
+        '401':
+          description: No autenticado
+
+    get:
+      summary: Listar todas las solicitudes (admin)
+      description: Devuelve todas las solicitudes de adopción en el sistema. Solo accesible para administradores.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista completa de solicitudes 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SolicitudAdopcion'                
+        '403':
+          description: Acceso denegado      
+
+  /api/mis-solicitudes:
+    get:
+      summary: Listar solicitudes del usuario autenticado
+      description: Devuelve todas las solicitudes de adopción realizadas por el usuario autenticado.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de solicitudes 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SolicitudAdopcion'          
+        '401':
+          description: No autenticado        
+
+  /api/solicitudes/{id}:
+    put:
+      summary: Aprobar o rechazar solicitud (admin)
+      description: Permite a un administrador actualizar el estado de una solicitud de adopción específica.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolicitudAdopcionUpdate'      
+      responses:
+        '200':
+          description: Solicitud actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SolicitudAdopcion'          
+        '403':
+          description: Acceso denegado
+        '404':
+          description: Solicitud no encontrada     
+
+  /api/dashboard:
+    get:
+      summary: Métricas del dashboard (admin)
+      description: Proporciona métricas clave para el dashboard administrativo.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Métricas del dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMetrics'          
+        '403':
+          description: Acceso denegado           
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+
+  schemas:
+    SolicitudAdopcion:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 12
+        user_id:
+          type: integer
+          example: 3
+        animal_id:
+          type: integer
+          example: 7
+        estado:
+          type: string
+          enum: [pendiente]
+          created_at:
+          type: string
+          format: date-time
+
+  SolicitudAdopcionCreate:
+      type: object
+      required:
+        - animal_id
+      properties:
+        animal_id:
+          type: integer
+          example: 7
+
+  SolicitudAdopcionUpdate:
+      type: object
+      required:
+        - estado
+      properties:
+        estado:
+          type: string
+          enum: [aprobada, rechazada]
+          example: aprobada
+
+  DashboardMetrics:
+      type: object
+      properties:
+        animales_disponibles:
+          type: integer
+          example: 10
+        animales_adoptados:
+          type: integer
+          example: 5
+        solicitudes_pendientes:
+          type: integer
+          example: 3
+      
+      
