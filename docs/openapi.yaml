@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: API REST - Plataforma de Adopción de Animales
+  version: 1.0.0
+  description: API REST desarrollada en Laravel para la gestión de adopciones de animales.
+
+servers:
+  - url: http://localhost/api
+
+segurity:
+  - bearerAuth: []  
+
+paths:
+  /api/login:
+    post:
+      summary: Login de usuario
+      responses:
+        '200':
+          description: Token de acceso devuelto correctamente
+
+  /api/animales:
+    get:
+      summary: Listado de animales
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Crear animal (admin)
+      responses:
+        '201':
+          description: Animal creado
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
