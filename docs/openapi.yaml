@@ -155,11 +155,11 @@ components:
         estado:
           type: string
           enum: [pendiente]
-          created_at:
+        created_at:
           type: string
           format: date-time
 
-  SolicitudAdopcionCreate:
+    SolicitudAdopcionCreate:
       type: object
       required:
         - animal_id
@@ -168,7 +168,7 @@ components:
           type: integer
           example: 7
 
-  SolicitudAdopcionUpdate:
+    SolicitudAdopcionUpdate:
       type: object
       required:
         - estado
@@ -178,7 +178,7 @@ components:
           enum: [aprobada, rechazada]
           example: aprobada
 
-  DashboardMetrics:
+    DashboardMetrics:
       type: object
       properties:
         animales_disponibles:
@@ -190,5 +190,3 @@ components:
         solicitudes_pendientes:
           type: integer
           example: 3
-      
-      
