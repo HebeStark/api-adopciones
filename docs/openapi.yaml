@@ -1,96 +1,133 @@
 openapi: 3.0.0
+
 info:
   title: API REST - Plataforma de Adopción de Animales
   version: 1.0.0
-  description: API REST desarrollada en Laravel para la gestión de adopciones de animales.
+  description: >
+    API REST desarrollada en Laravel como proyecto académico para gestionar
+    el proceso de adopción de animales. La API permite la autenticación de usuarios,
+    la consulta de animales disponibles, la creación y gestión de solicitudes de adopción,
+    así como un panel administrativo con métricas clave del sistema.
+
+    El sistema distingue entre usuarios estándar y administradores, aplicando
+    control de acceso mediante autenticación basada en tokens (Bearer).
 
 servers:
   - url: http://127.0.0.1:8000
 
 security:
-  - bearerAuth: []  
+  - bearerAuth: []
 
 paths:
   /api/login:
     post:
-      summary: Login de usuario
+      summary: Autenticación de usuario
+      description: >
+        Permite a un usuario autenticarse en el sistema mediante sus credenciales
+        y obtener un token de acceso. Este token será utilizado para acceder a
+        los endpoints protegidos de la API según el rol del usuario.
       responses:
         '200':
-          description: Token de acceso devuelto correctamente
+          description: Token de acceso generado correctamente
 
   /api/animales:
     get:
       summary: Listado de animales
+      description: >
+        Devuelve el listado de animales disponibles en la plataforma.
+        Este endpoint permite a los usuarios consultar los animales
+        antes de iniciar una solicitud de adopción.
       responses:
         '200':
-          description: Listado de animales
+          description: Listado de animales obtenido correctamente
+
     post:
-      summary: Crear animal (admin)
+      summary: Crear animal (administrador)
+      description: >
+        Permite a un administrador registrar un nuevo animal en el sistema,
+        haciéndolo disponible para futuras solicitudes de adopción.
+      security:
+        - bearerAuth: []
       responses:
         '201':
-          description: Animal creado
+          description: Animal creado correctamente
+        '403':
+          description: Acceso denegado
 
   /api/solicitudes:
     post:
       summary: Crear solicitud de adopción
-      description: Permite a un usuario autenticado crear una solicitud de adopción para un animal específico.
+      description: >
+        Permite a un usuario autenticado crear una solicitud de adopción
+        asociada a un animal concreto. Al crear la solicitud, esta queda
+        registrada con estado "pendiente" a la espera de revisión por parte
+        de un administrador.
       security:
         - bearerAuth: []
-      requestBody: 
+      requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SolicitudAdopcionCreate'      
+              $ref: '#/components/schemas/SolicitudAdopcionCreate'
       responses:
         '201':
           description: Solicitud creada exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SolicitudAdopcion'          
+                $ref: '#/components/schemas/SolicitudAdopcion'
         '401':
           description: No autenticado
 
     get:
-      summary: Listar todas las solicitudes (admin)
-      description: Devuelve todas las solicitudes de adopción en el sistema. Solo accesible para administradores.
+      summary: Listar todas las solicitudes (administrador)
+      description: >
+        Devuelve todas las solicitudes de adopción registradas en el sistema.
+        Este endpoint está destinado al uso administrativo para revisar,
+        aprobar o rechazar las solicitudes pendientes.
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Lista completa de solicitudes 
+          description: Lista completa de solicitudes
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SolicitudAdopcion'                
+                  $ref: '#/components/schemas/SolicitudAdopcion'
         '403':
-          description: Acceso denegado      
+          description: Acceso denegado
 
   /api/mis-solicitudes:
     get:
       summary: Listar solicitudes del usuario autenticado
-      description: Devuelve todas las solicitudes de adopción realizadas por el usuario autenticado.
+      description: >
+        Devuelve todas las solicitudes de adopción realizadas por el usuario
+        autenticado. Permite al usuario consultar el estado de sus propias
+        solicitudes sin acceso a la información de otros usuarios.
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Lista de solicitudes 
+          description: Lista de solicitudes del usuario
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SolicitudAdopcion'          
+                  $ref: '#/components/schemas/SolicitudAdopcion'
         '401':
-          description: No autenticado        
+          description: No autenticado
 
   /api/solicitudes/{id}:
     put:
-      summary: Aprobar o rechazar solicitud (admin)
-      description: Permite a un administrador actualizar el estado de una solicitud de adopción específica.
+      summary: Aprobar o rechazar solicitud (administrador)
+      description: >
+        Permite a un administrador actualizar el estado de una solicitud de adopción
+        específica, aprobándola o rechazándola como parte del proceso de validación
+        administrativa.
       security:
         - bearerAuth: []
       parameters:
@@ -104,40 +141,48 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SolicitudAdopcionUpdate'      
+              $ref: '#/components/schemas/SolicitudAdopcionUpdate'
       responses:
         '200':
           description: Solicitud actualizada exitosamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SolicitudAdopcion'          
+                $ref: '#/components/schemas/SolicitudAdopcion'
         '403':
           description: Acceso denegado
         '404':
-          description: Solicitud no encontrada     
+          description: Solicitud no encontrada
 
   /api/dashboard:
     get:
-      summary: Métricas del dashboard (admin)
-      description: Proporciona métricas clave para el dashboard administrativo.
+      summary: Métricas del dashboard (administrador)
+      description: >
+        Proporciona métricas agregadas del sistema para su visualización
+        en el dashboard administrativo. Estas métricas permiten obtener
+        una visión general del estado de la plataforma.
       security:
         - bearerAuth: []
       responses:
         '200':
-          description: Métricas del dashboard
+          description: Métricas del dashboard obtenidas correctamente
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DashboardMetrics'          
+                $ref: '#/components/schemas/DashboardMetrics'
         '403':
-          description: Acceso denegado           
+          description: Acceso denegado
 
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+      description: >
+        Autenticación basada en token Bearer. El token se obtiene mediante el
+        endpoint de login y debe enviarse en la cabecera Authorization para
+        acceder a los endpoints protegidos. Se utiliza para identificar al usuario
+        autenticado y aplicar controles de acceso según su rol.
 
   schemas:
     SolicitudAdopcion:
@@ -154,7 +199,7 @@ components:
           example: 7
         estado:
           type: string
-          enum: [pendiente]
+          enum: [pendiente, aprobada, rechazada]
         created_at:
           type: string
           format: date-time
