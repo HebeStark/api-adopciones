@@ -7,6 +7,7 @@ use App\Models\Animal;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
+
 class AnimalController extends Controller
 {
     public function index(): JsonResponse
