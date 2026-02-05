@@ -1,59 +1,233 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API REST – Plataforma de Adopción de Animales
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Descripción general
 
-## About Laravel
+Esta API REST ha sido desarrollada en Laravel el objetivo es gestionar el proceso de adopción de animales.  
+El sistema permite a los usuarios autenticarse, consultar animales disponibles y crear solicitudes de adopción, mientras que los administradores pueden gestionar dichas solicitudes y visualizar métricas generales a través de un dashboard.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+La API REST aplica control de acceso mediante autenticación basada en tokens (Bearer), diferenciando claramente entre usuarios estándar y administradores.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Objetivo del proyecto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+El objetivo principal es proporcionar una API que permita:
 
-## Learning Laravel
+- Gestionar usuarios autenticados mediante tokens.
+- Diferenciar permisos según el rol del usuario.
+- Facilitar el flujo de adopción de animales de forma estructurada.
+- Ofrecer un panel administrativo para la gestión del sistema.
+- Documentar la API de manera clara mediante Swagger/OpenAPI.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Tecnologías utilizadas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Backend
 
-## Laravel Sponsors
+- **Laravel** (Framework PHP)
+- Arquitectura **API REST**
+- Controladores, modelos y rutas siguiendo el patrón MVC
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Base de datos
 
-### Premium Partners
+- **Base de datos relacional** (configurable mediante el archivo `.env`)
+- Uso de migraciones y modelos Eloquent
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Autenticación
 
-## Contributing
+- **Autenticación mediante token Bearer**
+- Tokens enviados a través del encabezado `Authorization` en cada solicitud protegida
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Documentación
 
-## Code of Conduct
+- **Swagger UI**
+- Especificación **OpenAPI 3.0** en formato **YAML**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Funcionamiento del sistema
 
-## Security Vulnerabilities
+### Autenticación mediante token Bearer
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+El acceso a los recursos protegidos de la API se realiza mediante autenticación por token:
 
-## License
+1. El usuario se autentica en el sistema.
+2. El servidor devuelve un token de acceso.
+3. El cliente debe incluir dicho token en cada petición protegida usando el encabezado:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Authorization: Bearer {token}
+
+Este mecanismo garantiza que solo los usuarios autenticados puedan acceder a determinadas funcionalidades de la API.
+
+### Roles de usuario
+
+El sistema contempla dos roles principales:
+
+- **Usuario estándar**
+  - Puede consultar animales disponibles.
+  - Puede iniciar solicitudes de adopción.
+  - Puede gestionar sus propias solicitudes.
+
+- **Administrador**
+  - Accede a un dashboard administrativo.
+  - Puede gestionar animales, usuarios y solicitudes.
+  - Supervisa el estado general del sistema.
+
+La asignación de permisos se realiza en función del rol asociado al usuario autenticado.
+
+### Flujo de adopción de animales
+
+El proceso de adopción sigue un flujo básico:
+
+1. El usuario autenticado consulta el listado de animales disponibles.
+2. Selecciona un animal y envía una solicitud de adopción.
+3. La solicitud queda registrada en el sistema.
+4. El administrador revisa las solicitudes desde el panel administrativo.
+5. El estado de la solicitud puede ser gestionado por el administrador.
+
+Este flujo permite simular un proceso real de adopción de forma sencilla y controlada.
+
+### Dashboard administrativo
+
+El sistema incluye un **dashboard administrativo**, accesible únicamente para usuarios con rol de administrador.  
+Desde este panel es posible:
+
+- Visualizar información general del sistema.
+- Gestionar animales registrados.
+- Revisar y administrar solicitudes de adopción.
+- Supervisar usuarios y su actividad.
+
+## Instalación y ejecución en entorno local
+
+### Requisitos previos
+
+- PHP (versión compatible con Laravel)
+- Composer
+- Servidor de base de datos (por ejemplo, MySQL)
+- Servidor web o servidor embebido de Laravel
+
+### Pasos de instalación
+
+1. Clonar el repositorio del proyecto.
+2. Instalar las dependencias:
+
+```bash
+composer install
+```
+
+3.Copiar el archivo de entorno:
+
+```bash
+cp .env.example .env
+```
+
+4.Configurar las credenciales de la base de datos en el archivo `.env`.
+
+5.Generar la clave de la aplicación:
+
+```bash
+php artisan key:generate
+```
+
+6.Ejecutar las migraciones:
+
+```bash
+php artisan migrate
+```
+
+7.Iniciar el servidor de desarrollo:
+
+```bash
+php artisan serve
+```
+
+El proyecto estará disponible por defecto en:
+
+<http://127.0.0.1:8000>
+
+## Documentación de la API
+
+La API está documentada utilizando Swagger UI, lo que permite explorar y probar los endpoints disponibles de forma interactiva.
+
+URL de Swagger UI:
+
+<http://127.0.0.1:8000/swagger/index.html>
+
+La documentación se genera a partir de un archivo OpenAPI 3.0 en formato YAML, manteniendo coherencia con la implementación real de la API.
+
+## Pruebas y validación del sistema
+
+Con el objetivo de probar el funcionamiento de la API REST, se realizaron diversas pruebas funcionales utilizando **Thunder Client** como herramienta de cliente HTTP y **Swagger UI** como interfaz de documentación basada en OpenAPI. A continuación, se detallan las principales pruebas realizadas.
+
+## Puesta en marcha del servidor
+
+### Servidor Laravel en ejecución
+
+![Servidor en ejecución](./images/captura-servidor.png)
+
+Se inicia el servidor de desarrollo de Laravel mediante el comando `php artisan serve`, quedando la API accesible en la dirección `http://127.0.0.1:8000`. Esta prueba confirma que el entorno local está correctamente configurado y operativo
+
+### Documentación de la API con Swagger UI
+
+#### Interfaz Swagger UI
+
+![Swagger UI](./images/swagger-ui.png)
+
+La documentación de la API se encuentra disponible a través de Swagger UI, accesible en la URL `http://127.0.0.1:8000/swagger/index.html`.  
+La interfaz muestra la información general del proyecto, la versión de la API y el listado de endpoints documentados según la especificación OpenAPI 3.0 en formato YAML.
+
+### Autenticación de usuario estándar
+
+#### Inicio de sesión de usuario estándar
+
+![Login usuario](./images/login-usuario.png)
+
+Se realiza el inicio de sesión de un usuario estándar mediante el endpoint de autenticación. Como respuesta, el sistema devuelve un token de acceso junto con el tipo `Bearer`, el cual será utilizado para acceder a los endpoints protegidos.
+
+### Acceso a recursos protegidos con token Bearer
+
+#### Acceso a solicitudes del usuario autenticado
+
+![Solicitudes usuario](./images/solicitudes-usuario.png)
+
+Utilizando el token Bearer en la cabecera `Authorization`, el usuario autenticado accede correctamente a un endpoint protegido que devuelve sus propias solicitudes. Esta prueba valida el uso de Laravel Passport para la autenticación basada en tokens.
+
+### Autenticación de usuario administrador
+
+#### Inicio de sesión de administrador
+
+![Login administrador](./images/login-admin.png)
+
+Se realiza el inicio de sesión con un usuario con rol de administrador. El sistema devuelve un token válido que permite el acceso a funcionalidades administrativas restringidas.
+
+### Creación de animales por parte del administrador
+
+#### Creación de un animal (usuario administrador)
+
+![Creación de animal](./images/admin-crea-animal.png)
+
+En esta prueba se valida la funcionalidad de creación de animales, accesible únicamente para usuarios con rol de administrador.  
+Mediante una petición `POST` al endpoint correspondiente, el administrador envía los datos del animal en formato JSON. El sistema responde con un código HTTP `201 Created`, confirmando que el recurso ha sido creado correctamente y almacenado en la base de datos.
+
+### Acceso al dashboard administrativo
+
+#### Acceso al dashboard administrativo (métricas del sistema)
+
+![Dashboard administrador](./images/dashboard-admin.png)
+
+El administrador accede a un endpoint exclusivo que devuelve métricas del sistema, como animales disponibles, animales adoptados y solicitudes pendientes. Esta prueba confirma la correcta aplicación del control de acceso basado en roles.
+
+### Protección de endpoints mediante autenticación
+
+#### Uso de token Bearer en endpoint protegido
+
+![Token protegido](./images/token-protegido.png)
+
+Se observa el uso del encabezado `Authorization: Bearer` en Thunder Client para acceder a endpoints protegidos. Sin un token válido, el acceso a estos recursos estaría denegado.
+
+#### Autorización en Swagger UI
+
+![Swagger autorización](./images/swagger-autorizacion.png)
+
+Swagger UI permite autorizar peticiones mediante la introducción del token Bearer, facilitando la prueba de endpoints protegidos directamente desde la documentación.
+
+#### Ejecución de endpoint de solicitudes (administrador)
+
+![Swagger solicitudes](./images/swagger-solicitudes.png)
+
+Desde Swagger UI se ejecuta un endpoint administrativo que devuelve la lista completa de solicitudes de adopción. La respuesta correcta con código HTTP 200 confirma la coherencia entre la implementación de la API y su documentación.
